@@ -6,7 +6,7 @@ const StringSet = require('../lib/string_set');
 const doubleClickZoom = require('../lib/double_click_zoom');
 const moveFeatures = require('../lib/move_features');
 const Constants = require('../constants');
-const Feature = require('../feature_types/feature');
+const MultiFeature = require('../feature_types/multi_feature');
 
 module.exports = function(ctx, options = {}) {
   let dragMoveLocation = null;
@@ -251,35 +251,23 @@ module.exports = function(ctx, options = {}) {
 
       var type = features[0].type;
       var coordinates = [];
-      var properties = {};
+      var properties = features[0].properties;
 
       features.forEach(function(feature) {
         if(feature.type !== type) {
           return;
         }
-        coordinates.push(feature.coordinates);
-        properties = feature.properties;
+        coordinates.push(feature.getCoordinates());
       });
 
-      var geojson = {
+      var multiFeature = new MultiFeature(ctx, {
         type: Constants.geojsonTypes.FEATURE,
         properties: {},
         geometry: {
           type: 'Multi' + type,
           coordinates: coordinates
         }
-      };
-
-      var MultiFeature = function(ctx, geojson) {
-        Feature.call(this, ctx, geojson);
-      };
-
-      MultiFeature.prototype = Object.create(Feature.prototype);
-
-      const multiFeature = new MultiFeature(ctx, geojson);
-
-      console.log(features);
-      console.log(multiFeature);
+      });
 
       ctx.store.add(multiFeature);
       ctx.store.delete(ctx.store.getSelectedIds());
@@ -287,9 +275,18 @@ module.exports = function(ctx, options = {}) {
 
     },
     splitFeatures: function() {
-      var multiFeatures = ctx.store.getSelected();
-      if (!multiFeatures) return;
-      ctx.store.delete(ctx.store.getSelectedIds());
+      var selectedFeatures = ctx.store.getSelected();
+      if (!selectedFeatures) return;
+      var features = [];
+      selectedFeatures.forEach(function(feature){
+        if(feature instanceof MultiFeature) {
+          feature.getFeatures().forEach(function(subFeature){
+            ctx.store.add(subFeature);
+            ctx.store.select([subFeature.id]);
+          });
+          ctx.store.delete(feature);
+        }
+      })
     }
   };
 };
