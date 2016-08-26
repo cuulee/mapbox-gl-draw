@@ -62,6 +62,18 @@ var ModeHandler = function(mode, DrawContext) {
         DrawContext.store.render();
       }
     },
+    mergeFeatures: function() {
+      if (mode.mergeFeatures) {
+        mode.mergeFeatures();
+        DrawContext.store.render();
+      }
+    },
+    splitFeatures: function() {
+      if (mode.splitFeatures) {
+        mode.splitFeatures();
+        DrawContext.store.render();
+      }
+    },
     drag: function(event) {
       delegate('drag', event);
     },

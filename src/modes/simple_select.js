@@ -6,6 +6,7 @@ const StringSet = require('../lib/string_set');
 const doubleClickZoom = require('../lib/double_click_zoom');
 const moveFeatures = require('../lib/move_features');
 const Constants = require('../constants');
+const Feature = require('../feature_types/feature');
 
 module.exports = function(ctx, options = {}) {
   let dragMoveLocation = null;
@@ -233,7 +234,7 @@ module.exports = function(ctx, options = {}) {
       }
     },
     render: function(geojson, push) {
-      geojson.properties.active = (ctx.store.isSelected(geojson.properties.id) )
+      geojson.properties.active = (ctx.store.isSelected(geojson.properties.id))
         ? Constants.activeStates.ACTIVE
         : Constants.activeStates.INACTIVE;
       push(geojson);
@@ -241,7 +242,53 @@ module.exports = function(ctx, options = {}) {
         || geojson.geometry.type === Constants.geojsonTypes.POINT) return;
       createSupplementaryPoints(geojson).forEach(push);
     },
-    trash() {
+    trash: function() {
+      ctx.store.delete(ctx.store.getSelectedIds());
+    },
+    mergeFeatures: function() {
+      var features = ctx.store.getSelected();
+      if (!features) return;
+
+      var type = features[0].type;
+      var coordinates = [];
+      var properties = {};
+
+      features.forEach(function(feature) {
+        if(feature.type !== type) {
+          return;
+        }
+        coordinates.push(feature.coordinates);
+        properties = feature.properties;
+      });
+
+      var geojson = {
+        type: Constants.geojsonTypes.FEATURE,
+        properties: {},
+        geometry: {
+          type: 'Multi' + type,
+          coordinates: coordinates
+        }
+      };
+
+      var MultiFeature = function(ctx, geojson) {
+        Feature.call(this, ctx, geojson);
+      };
+
+      MultiFeature.prototype = Object.create(Feature.prototype);
+
+      const multiFeature = new MultiFeature(ctx, geojson);
+
+      console.log(features);
+      console.log(multiFeature);
+
+      ctx.store.add(multiFeature);
+      ctx.store.delete(ctx.store.getSelectedIds());
+      ctx.store.setSelected(multiFeature.id);
+
+    },
+    splitFeatures: function() {
+      var multiFeatures = ctx.store.getSelected();
+      if (!multiFeatures) return;
       ctx.store.delete(ctx.store.getSelectedIds());
     }
   };

@@ -155,6 +155,13 @@ module.exports = function(ctx, opts) {
         ctx.store.delete([featureId]);
         ctx.events.changeMode(Constants.modes.SIMPLE_SELECT, null);
       }
+    },
+    mergeFeatures: function() {
+      console.log(ctx.store.getSelectedIds());
+      // ctx.store.delete(ctx.store.getSelectedIds());
+    },
+    splitFeatures: function() {
+      // ctx.store.delete(ctx.store.getSelectedIds());
     }
   };
 };

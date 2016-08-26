@@ -153,6 +153,28 @@ module.exports = function(ctx) {
         }
       });
     }
+
+    if (controls.merge_features) {
+      buttonElements.trash = createControlButton('mergeFeatures', {
+        container: controlGroup,
+        className: Constants.classes.CONTROL_BUTTON_MERGE_FEATURES,
+        title: 'Merge',
+        onActivate: () => {
+          ctx.events.mergeFeatures();
+        }
+      });
+    }
+
+    if (controls.split_features) {
+      buttonElements.trash = createControlButton('splitFeatures', {
+        container: controlGroup,
+        className: Constants.classes.CONTROL_BUTTON_SPLIT_FEATURES,
+        title: 'Split',
+        onActivate: () => {
+          ctx.events.splitFeatures();
+        }
+      });
+    }
   }
 
   function removeButtons() {
