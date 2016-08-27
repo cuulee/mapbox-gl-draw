@@ -247,44 +247,49 @@ module.exports = function(ctx, options = {}) {
     },
     mergeFeatures: function() {
       var features = ctx.store.getSelected();
-      if (!features) return;
+      if (!features || features.length < 2) return;
 
-      var type = features[0].type;
+      var featureType = features[0].type;
       var coordinates = [];
       var properties = features[0].properties;
+      var featuresSplit = [];
 
       features.forEach(function(feature) {
-        if(feature.type !== type) {
+        if(feature.type !== featureType) {
           return;
         }
         coordinates.push(feature.getCoordinates());
+        featuresSplit.push(feature.id);
       });
 
       var multiFeature = new MultiFeature(ctx, {
         type: Constants.geojsonTypes.FEATURE,
         properties: {},
         geometry: {
-          type: 'Multi' + type,
+          type: 'Multi' + featureType,
           coordinates: coordinates
         }
       });
-
+      var featuresToDelete = ctx.store.getSelectedIds()
+        .filter(function(i) {
+          return featuresSplit.indexOf(i) >= 0;
+        });
       ctx.store.add(multiFeature);
-      ctx.store.delete(ctx.store.getSelectedIds());
+      ctx.store.delete(featuresToDelete);
       ctx.store.setSelected(multiFeature.id);
 
     },
     splitFeatures: function() {
       var selectedFeatures = ctx.store.getSelected();
       if (!selectedFeatures) return;
-      var features = [];
+
       selectedFeatures.forEach(function(feature){
         if(feature instanceof MultiFeature) {
           feature.getFeatures().forEach(function(subFeature){
             ctx.store.add(subFeature);
             ctx.store.select([subFeature.id]);
           });
-          ctx.store.delete(feature);
+          ctx.store.delete(feature.id);
         }
       })
     }
