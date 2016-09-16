@@ -18,7 +18,9 @@ test('returned API', t => {
   t.equal(typeof mh.mouseout, 'function', 'exposes mouseout');
   t.equal(typeof mh.keydown, 'function', 'exposes keydown');
   t.equal(typeof mh.keyup, 'function', 'exposes keyup');
-  t.equal(Object.keys(mh).length, 11, 'no unexpected properties');
+  t.equal(typeof mh.click, 'function', 'exposes mergeFeatures');
+  t.equal(typeof mh.click, 'function', 'exposes splitFeatures');
+  t.equal(Object.keys(mh).length, 13, 'no unexpected properties');
   t.end();
 });
 
@@ -158,3 +160,55 @@ test('Modehandler#trash without a mode.trash', t => {
 
   t.end();
 });
+
+// test('Modehandler#mergeFeatures', t => {
+//   const mode = createMockMode();
+//   const drawContext = createMockModeHandlerContext();
+//   const mh = ModeHandler(mode, drawContext);
+
+//   mh.mergeFeatures();
+//   t.equal(mode.mergeFeatures.callCount, 1, 'mode.mergeFeatures called');
+//   t.equal(drawContext.store.render.callCount, 1, 'store.render called');
+
+//   t.end();
+// });
+
+// test('Modehandler#mergeFeatures without a mode.mergeFeatures', t => {
+//   const mode = createMockMode();
+//   delete mode.mergeFeatures;
+//   const drawContext = createMockModeHandlerContext();
+//   const mh = ModeHandler(mode, drawContext);
+
+//   t.doesNotThrow(() => {
+//     mh.mergeFeatures();
+//   });
+//   t.equal(drawContext.store.render.callCount, 0, 'store.render not called');
+
+//   t.end();
+// });
+
+// test('Modehandler#splitFeatures', t => {
+//   const mode = createMockMode();
+//   const drawContext = createMockModeHandlerContext();
+//   const mh = ModeHandler(mode, drawContext);
+
+//   mh.splitFeatures();
+//   t.equal(mode.mergeFeatures.callCount, 1, 'mode.splitFeatures called');
+//   t.equal(drawContext.store.render.callCount, 1, 'store.render called');
+
+//   t.end();
+// });
+
+// test('Modehandler#splitFeatures without a mode.splitFeatures', t => {
+//   const mode = createMockMode();
+//   delete mode.mergeFeatures;
+//   const drawContext = createMockModeHandlerContext();
+//   const mh = ModeHandler(mode, drawContext);
+
+//   t.doesNotThrow(() => {
+//     mh.splitFeatures();
+//   });
+//   t.equal(drawContext.store.render.callCount, 0, 'store.render not called');
+
+//   t.end();
+// });

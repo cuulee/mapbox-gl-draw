@@ -19,7 +19,9 @@ test('Options test', t => {
         point: true,
         line_string: true,
         polygon: true,
-        trash: true
+        trash: true,
+        merge_features: true,
+        split_features: true
       }
     };
     t.deepEquals(defaultOptions, Draw.options);
@@ -41,7 +43,9 @@ test('Options test', t => {
         point: true,
         line_string: true,
         polygon: true,
-        trash: true
+        trash: true,
+        merge_features: true,
+        split_features: true
       }
     };
 
@@ -63,7 +67,9 @@ test('Options test', t => {
         point: false,
         line_string: false,
         polygon: false,
-        trash: false
+        trash: false,
+        merge_features: false,
+        split_features: false
       }
     };
     t.deepEquals(defaultOptions, Draw.options);
@@ -84,7 +90,9 @@ test('Options test', t => {
         point: true,
         line_string: false,
         polygon: false,
-        trash: false
+        trash: false,
+        merge_features: false,
+        split_features: false
       }
     };
 
@@ -106,7 +114,9 @@ test('Options test', t => {
         point: false,
         line_string: true,
         polygon: true,
-        trash: true
+        trash: true,
+        merge_features: true,
+        split_features: true
       }
     };
 
