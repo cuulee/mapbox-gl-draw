@@ -163,14 +163,14 @@ module.exports = function(ctx) {
     return api;
   };
 
-  api.mergeFeatures = function(featureIds, newId) {
-    console.log(featureIds);
+  api.mergeSelectedFeatures = function() {
+    // console.log(featureIds);
     ctx.events.mergeFeatures({ silent: true });
     return api;
   };
 
-  api.splitFeatures = function(featureIds, newId) {
-    console.log(featureIds);
+  api.splitSelectedFeatures = function() {
+    // console.log(featureIds);
     ctx.events.splitFeatures({ silent: true });
     return api;
   };
