@@ -165,12 +165,12 @@ module.exports = function(ctx) {
     trash: function(options) {
       currentMode.trash(options);
     },
-    mergeFeatures: function() {
-      currentMode.mergeFeatures();
-    },
-    splitFeatures: function() {
-      currentMode.splitFeatures();
-    },
+    // mergeFeatures: function() {
+    //   currentMode.mergeFeatures();
+    // },
+    // splitFeatures: function() {
+    //   currentMode.splitFeatures();
+    // },
     getMode: function() {
       return currentModeName;
     }

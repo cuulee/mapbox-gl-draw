@@ -6,6 +6,7 @@ var stringSetsAreEqual = require('./lib/string_sets_are_equal');
 var geojsonhint = require('geojsonhint');
 var Constants = require('./constants');
 var StringSet = require('./lib/string_set');
+const MultiFeature = require('./feature_types/multi_feature');
 
 var featureTypes = {
   Polygon: require('./feature_types/polygon'),
@@ -163,15 +164,60 @@ module.exports = function(ctx) {
     return api;
   };
 
-  api.mergeSelectedFeatures = function() {
-    // console.log(featureIds);
-    ctx.events.mergeFeatures({ silent: true });
-    return api;
+  api.mergeSelectedFeatures = function(featureIds) {
+    if (!featureIds || featureIds.length < 2) return;
+
+    var features = [];
+    featureIds.forEach(function(id) {
+      features.push(ctx.store.get(id));
+    });
+    if (!features || features.length < 2) return;
+
+    var featureType = features[0].type;
+    var coordinates = [];
+    var properties = features[0].properties;
+    var featuresSplit = [];
+
+    features.forEach(function(feature) {
+      if(feature.type !== featureType) {
+        return;
+      }
+      coordinates.push(feature.getCoordinates());
+      featuresSplit.push(feature.id);
+    });
+
+    var multiFeature = new MultiFeature(ctx, {
+      type: Constants.geojsonTypes.FEATURE,
+      properties: {},
+      geometry: {
+        type: 'Multi' + featureType,
+        coordinates: coordinates
+      }
+    });
+    var featuresToDelete = ctx.store.getSelectedIds()
+      .filter(function(i) {
+        return featuresSplit.indexOf(i) >= 0;
+      });
+    ctx.store.add(multiFeature);
+    ctx.store.delete(featuresToDelete);
+    ctx.store.setSelected(multiFeature.id);
+
+    return multiFeature;
   };
 
   api.splitSelectedFeatures = function() {
-    // console.log(featureIds);
-    ctx.events.splitFeatures({ silent: true });
+    var selectedFeatures = ctx.store.getSelected();
+      if (!selectedFeatures) return;
+
+      selectedFeatures.forEach(function(feature){
+        if(feature instanceof MultiFeature) {
+          feature.getFeatures().forEach(function(subFeature){
+            ctx.store.add(subFeature);
+            ctx.store.select([subFeature.id]);
+          });
+          ctx.store.delete(feature.id);
+        }
+      })
     return api;
   };
 
