@@ -194,30 +194,42 @@ module.exports = function(ctx) {
         coordinates: coordinates
       }
     });
-    var featuresToDelete = ctx.store.getSelectedIds()
-      .filter(function(i) {
-        return featuresSplit.indexOf(i) >= 0;
-      });
     ctx.store.add(multiFeature);
-    ctx.store.delete(featuresToDelete);
-    ctx.store.setSelected(multiFeature.id);
+    ctx.store.delete(featureIds);
 
-    return multiFeature;
+    ctx.map.fire(Constants.events.CREATE, {
+      features: [multiFeature.toGeoJSON()]
+    });
+    // ctx.store.setSelected(multiFeature.id);
+
+    return api;
   };
 
-  api.splitSelectedFeatures = function() {
-    var selectedFeatures = ctx.store.getSelected();
-      if (!selectedFeatures) return;
+  api.splitSelectedFeatures = function(featureIds) {
+    if (!featureIds) return;
 
-      selectedFeatures.forEach(function(feature){
-        if(feature instanceof MultiFeature) {
-          feature.getFeatures().forEach(function(subFeature){
-            ctx.store.add(subFeature);
-            ctx.store.select([subFeature.id]);
-          });
-          ctx.store.delete(feature.id);
-        }
-      })
+    var selectedFeatures = [];
+    featureIds.forEach(function(id) {
+      selectedFeatures.push(ctx.store.get(id));
+    });
+    if (!selectedFeatures) return;
+
+    var createdFeatures = [];
+
+    selectedFeatures.forEach(function(feature){
+      if(feature instanceof MultiFeature) {
+        feature.getFeatures().forEach(function(subFeature){
+          ctx.store.add(subFeature);
+          createdFeatures.push(subFeature.toGeoJSON());
+          // ctx.store.select([subFeature.id]);
+        });
+        ctx.store.delete(feature.id);
+      }
+    })
+
+    ctx.map.fire(Constants.events.CREATE, {
+      features: createdFeatures
+    });
     return api;
   };
 

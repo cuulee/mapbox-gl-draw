@@ -6,6 +6,7 @@ const StringSet = require('../lib/string_set');
 const doubleClickZoom = require('../lib/double_click_zoom');
 const moveFeatures = require('../lib/move_features');
 const Constants = require('../constants');
+const MultiFeature = require('../feature_types/multi_feature');
 
 module.exports = function(ctx, options = {}) {
   let dragMoveLocation = null;

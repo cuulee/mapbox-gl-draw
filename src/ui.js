@@ -5,6 +5,7 @@ const classTypes = ['mode', 'feature', 'mouse'];
 
 module.exports = function(ctx) {
 
+
   const buttonElements = {};
   let activeButton = null;
 
@@ -160,7 +161,7 @@ module.exports = function(ctx) {
         className: Constants.classes.CONTROL_BUTTON_MERGE_FEATURES,
         title: 'Merge',
         onActivate: () => {
-          ctx.events.mergeFeatures();
+          ctx.api.mergeSelectedFeatures(ctx.store.getSelectedIds());
         }
       });
     }
@@ -171,7 +172,7 @@ module.exports = function(ctx) {
         className: Constants.classes.CONTROL_BUTTON_SPLIT_FEATURES,
         title: 'Split',
         onActivate: () => {
-          ctx.events.splitFeatures();
+          ctx.api.splitSelectedFeatures(ctx.store.getSelectedIds());
         }
       });
     }

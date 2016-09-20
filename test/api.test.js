@@ -425,9 +425,8 @@ test('Draw.modes', t => {
 test('Draw.mergeSelectedFeatures -- multiploygon', t => {
   const [polygonId] = Draw.add(getGeoJSON('polygon'));
   const [polygon2Id] = Draw.add(getGeoJSON('polygon2'));
-  const returnA = Draw.changeMode('simple_select', { featureIds: [polygonId, polygon2Id]});
 
-  Draw.mergeSelectedFeatures();
+  Draw.mergeSelectedFeatures([polygonId, polygon2Id]);
   t.equals(Draw.getAll().features.length, 1, 'can merge two features');
   t.equals(Draw.getAll().features[0].geometry.type, 'MultiPolygon', 'can merge two polygons into MultiPolygon');
   Draw.deleteAll();
@@ -437,9 +436,8 @@ test('Draw.mergeSelectedFeatures -- multiploygon', t => {
 test('Draw.mergeSelectedFeatures -- multipoint', t => {
   const [pointId] = Draw.add(getGeoJSON('point'));
   const [point2Id] = Draw.add(getGeoJSON('point2'));
-  const returnA = Draw.changeMode('simple_select', { featureIds: [pointId, point2Id]});
 
-  Draw.mergeSelectedFeatures();
+  Draw.mergeSelectedFeatures([pointId, point2Id]);
   t.equals(Draw.getAll().features.length, 1, 'can merge two features');
   t.equals(Draw.getAll().features[0].geometry.type, 'MultiPoint', 'can merge two points into MultiPoint');
   Draw.deleteAll();
@@ -449,9 +447,8 @@ test('Draw.mergeSelectedFeatures -- multipoint', t => {
 test('Draw.mergeSelectedFeatures -- multilinestring', t => {
   const [lineId] = Draw.add(getGeoJSON('line'));
   const [line2Id] = Draw.add(getGeoJSON('line2'));
-  const returnA = Draw.changeMode('simple_select', { featureIds: [lineId, line2Id]});
 
-  Draw.mergeSelectedFeatures();
+  Draw.mergeSelectedFeatures([lineId, line2Id]);
   t.equals(Draw.getAll().features.length, 1, 'can merge two features');
   t.equals(Draw.getAll().features[0].geometry.type, 'MultiLineString', 'can merge two linestrings into MultiLineString');
   Draw.deleteAll();
@@ -460,9 +457,8 @@ test('Draw.mergeSelectedFeatures -- multilinestring', t => {
 
 test('Draw.splitSelectedFeatures -- multilinestring', t => {
   const [multiLineStringId] = Draw.add(getGeoJSON('multiLineString'));
-  const returnA = Draw.changeMode('simple_select', { featureIds: [multiLineStringId]});
 
-  Draw.splitSelectedFeatures();
+  Draw.splitSelectedFeatures([multiLineStringId]);
   t.equals(Draw.getAll().features.length, 2, 'can split multiLineString');
   Draw.deleteAll();
   t.end();
@@ -471,9 +467,8 @@ test('Draw.splitSelectedFeatures -- multilinestring', t => {
 
 test('Draw.splitSelectedFeatures -- multipolygon', t => {
   const [multipolygon2Id] = Draw.add(getGeoJSON('multiPolygon2'));
-  const returnA = Draw.changeMode('simple_select', { featureIds: [multipolygon2Id]});
 
-  Draw.splitSelectedFeatures();
+  Draw.splitSelectedFeatures([multipolygon2Id]);
   t.equals(Draw.getAll().features.length, 2, 'can split multipolygon');
   Draw.deleteAll();
   t.end();
@@ -482,9 +477,8 @@ test('Draw.splitSelectedFeatures -- multipolygon', t => {
 
 test('Draw.splitSelectedFeatures -- multipoint', t => {
   const [multipointId] = Draw.add(getGeoJSON('multiPoint'));
-  const returnA = Draw.changeMode('simple_select', { featureIds: [multipointId]});
 
-  Draw.splitSelectedFeatures();
+  Draw.splitSelectedFeatures([multipointId]);
   t.equals(Draw.getAll().features.length, 2, 'can split multipoint');
   Draw.deleteAll();
   t.end();
