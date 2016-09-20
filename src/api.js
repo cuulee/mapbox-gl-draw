@@ -196,11 +196,12 @@ module.exports = function(ctx) {
     });
     ctx.store.add(multiFeature);
     ctx.store.delete(featureIds);
+    ctx.store.setSelected(multiFeature.id);
 
     ctx.map.fire(Constants.events.CREATE, {
       features: [multiFeature.toGeoJSON()]
     });
-    // ctx.store.setSelected(multiFeature.id);
+
 
     return api;
   };
@@ -221,7 +222,7 @@ module.exports = function(ctx) {
         feature.getFeatures().forEach(function(subFeature){
           ctx.store.add(subFeature);
           createdFeatures.push(subFeature.toGeoJSON());
-          // ctx.store.select([subFeature.id]);
+          ctx.store.select([subFeature.id]);
         });
         ctx.store.delete(feature.id);
       }
