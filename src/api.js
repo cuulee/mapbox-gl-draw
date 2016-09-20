@@ -164,7 +164,7 @@ module.exports = function(ctx) {
     return api;
   };
 
-  api.mergeSelectedFeatures = function(featureIds) {
+  api.mergeFeatures = function(featureIds) {
     if (!featureIds || featureIds.length < 2) return;
 
     var features = [];
@@ -206,7 +206,7 @@ module.exports = function(ctx) {
     return api;
   };
 
-  api.splitSelectedFeatures = function(featureIds) {
+  api.splitFeatures = function(featureIds) {
     if (!featureIds) return;
 
     var selectedFeatures = [];

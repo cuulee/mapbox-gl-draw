@@ -161,7 +161,7 @@ module.exports = function(ctx) {
         className: Constants.classes.CONTROL_BUTTON_MERGE_FEATURES,
         title: 'Merge',
         onActivate: () => {
-          ctx.api.mergeSelectedFeatures(ctx.store.getSelectedIds());
+          ctx.api.mergeFeatures(ctx.store.getSelectedIds());
         }
       });
     }
@@ -172,7 +172,7 @@ module.exports = function(ctx) {
         className: Constants.classes.CONTROL_BUTTON_SPLIT_FEATURES,
         title: 'Split',
         onActivate: () => {
-          ctx.api.splitSelectedFeatures(ctx.store.getSelectedIds());
+          ctx.api.splitFeatures(ctx.store.getSelectedIds());
         }
       });
     }
