@@ -173,37 +173,43 @@ module.exports = function(ctx) {
     });
     if (!features || features.length < 2) return;
 
-    var featureType = features[0].type;
+    var featureType = features[0].type.replace('Multi','');
     var coordinates = [];
     var properties = features[0].properties;
     var featuresSplit = [];
 
     features.forEach(function(feature) {
-      if(feature.type !== featureType) {
+      if(feature.type.replace('Multi','') !== featureType) {
         return;
       }
-      coordinates.push(feature.getCoordinates());
+      if(feature.type.includes('Multi')) {
+        feature.getCoordinates().forEach(function(subcoords) {
+          coordinates.push(subcoords);
+        });
+      } else {
+        coordinates.push(feature.getCoordinates());
+      }
       featuresSplit.push(feature.id);
     });
 
     var multiFeature = new MultiFeature(ctx, {
       type: Constants.geojsonTypes.FEATURE,
-      properties: {},
+      properties: features[0].properties || {},
       geometry: {
         type: 'Multi' + featureType,
         coordinates: coordinates
       }
     });
-    ctx.store.add(multiFeature);
-    ctx.store.delete(featureIds);
-    ctx.store.setSelected(multiFeature.id);
+    // ctx.store.add(multiFeature);
+    // ctx.store.setSelected([multiFeature.id], {silent: true});
+    // ctx.store.delete(featureIds, { silent: true });
+    // ctx.store.delete(featureIds);
 
-    ctx.map.fire(Constants.events.CREATE, {
-      features: [multiFeature.toGeoJSON()]
-    });
+    // ctx.map.fire(Constants.events.CREATE, {
+    //   features: [multiFeature.toGeoJSON()]
+    // });
 
-
-    return api;
+    return multiFeature.toGeoJSON();
   };
 
   api.splitFeatures = function(featureIds) {
@@ -221,10 +227,12 @@ module.exports = function(ctx) {
       if(feature instanceof MultiFeature) {
         feature.getFeatures().forEach(function(subFeature){
           ctx.store.add(subFeature);
+          subFeature.properties = feature.properties || {};
           createdFeatures.push(subFeature.toGeoJSON());
-          ctx.store.select([subFeature.id]);
+          ctx.store.select([subFeature.id], {silent: true});
         });
         ctx.store.delete(feature.id);
+        // ctx.store.delete(feature.id, { silent: true });
       }
     })
 
